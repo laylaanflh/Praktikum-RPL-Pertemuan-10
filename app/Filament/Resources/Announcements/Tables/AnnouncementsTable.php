@@ -7,7 +7,10 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-
+use Illuminate\Support\Str;
+use Filament\Actions\DeleteAction;
+use Filament\Tables\Columns\ImageColumn;
+    
 class AnnouncementsTable
 {
     public static function configure(Table $table): Table
@@ -15,31 +18,44 @@ class AnnouncementsTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->searchable(),
-                TextColumn::make('users_id')
-                    ->numeric()
+                    ->label('Judul')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold')
+                    ->limit(50)
+                    ->tooltip(fn (?string $state): ?string => $state),
+                TextColumn::make('content')
+                    ->label('Cuplikan')
+                    ->formatStateUsing(fn (?string $state): string => Str::limit(strip_tags($state ?? ''), 60))
+                    ->wrap()
+                    ->toggleable(),
+                TextColumn::make('user.name')
+                    ->label('Dibuat Oleh')
+                    ->badge()
+                    ->color('info')
                     ->sortable(),
                 TextColumn::make('slug')
-                    ->searchable(),
+                    ->label('Slug')
+                    ->copyable()
+                    ->copyMessage('Slug disalin!')
+                    ->limit(35),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Diterbitkan')
+                    ->dateTime('d M Y H:i')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }

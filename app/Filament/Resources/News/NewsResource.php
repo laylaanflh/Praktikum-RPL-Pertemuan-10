@@ -11,21 +11,27 @@ use App\Models\News;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use UnitEnum;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class NewsResource extends Resource
 {
     protected static ?string $model = News::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
     protected static ?string $navigationLabel = 'Berita';
+
     protected static ?string $modelLabel = 'Berita';
+
     protected static ?string $pluralModelLabel = 'Berita';
+
     protected static string|UnitEnum|null $navigationGroup = 'Publikasi';
+
     protected static ?int $navigationSort = 1;
-    protected static ?string $recordTitleAttribute = 'News';
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     public static function form(Schema $schema): Schema
     {
@@ -39,9 +45,7 @@ class NewsResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

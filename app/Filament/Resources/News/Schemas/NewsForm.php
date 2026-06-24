@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\News\Schemas;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
 class NewsForm
@@ -13,18 +15,29 @@ class NewsForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
-                Textarea::make('content')
+                    ->label('Judul Berita')
+                    ->required()
+                    ->maxLength(255)
+                    ->placeholder('contoh: B University Raih Akreditasi Unggul')
+                    ->helperText('Slug URL akan dibuat otomatis dari judul ini.')
+                    ->columnSpanFull(),
+
+                RichEditor::make('content')
+                    ->label('Isi Berita')
                     ->required()
                     ->columnSpanFull(),
-                Textarea::make('image')
+
+                FileUpload::make('image')
+                    ->label('Foto Berita')
+                    ->image()
+                    ->directory('news')
+                    ->visibility('public')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('users_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('slug')
-                    ->required(),
+
+                Hidden::make('slug'),
+
+                Hidden::make('users_id'),
             ]);
     }
 }
